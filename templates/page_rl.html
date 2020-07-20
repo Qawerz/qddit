@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}<title>{{ publications.name }}</title>{% endblock %}
+{% block style %}
+<style>
+       .perenos {
+    margin:20px auto;
+    width:1000px;
+    word-break:break-all;
+    }
+        .perenos-hyphens {
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    }
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+.w-960 {
+    width: 960px;
+}
+.w-2\/3 {
+    width: 66.66667%;
+}
+.w-1\/3 {
+    width: 33.33333%;
+}
+.w-1\/12 {
+    width: 8.33333%;
+}
+.w-11\/12 {
+    width: 91.66667%;
+}
+.flex {
+    display: flex;
+}
+.flex-col {
+    flex-direction: column;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.bg-gray{
+    background: #dae0e6;
+}
+.bg-soft-gray {
+    background-color: #f8f9fa;
+}
+.border-grey-light-alt {
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+}
+.bg-white {
+    background-color: #ffffff;
+}
+.text-xs {
+    font-size: .75rem;
+}
+.text-lg {
+    font-size: 1.125rem;
+}
+.font-medium {
+    font-weight: 500;
+}
+.font-semibold {
+    font-weight: 600;
+}
+.items-c {
+    align-items: center;
+}
+.items-t {
+    align-items: flex-start;
+}
+.items-s {
+    align-items: stretch;
+}
+
+.userlogocirc {
+    border: 1px solid black;
+    border-radius: 50%;
+    -ms-flex-preferred-size: 38px;
+    flex-basis: 38px;
+    height: 38px;
+    margin-right: 8px;
+    overflow: hidden;
+    width: 38px;
+}
+.createpostdiv {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 16px;
+    padding: 8px;
+}
+
+.postdivmain {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: flex;
+
+
+}
+.postdiv {
+    background-color: #fff;
+    margin-bottom: 2px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.user_favcolor {
+    {% if request.user.is_authenticated %}
+    background: #{{user.profile.favcolor}} repeat;
+    {% else %}
+    background: orange repeat;
+    {% endif %}
+}
+
+.createpostinput {
+    background-color: #f6f7f8;
+    border-radius: 4px;
+    border: 1px solid #edeff1;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #1c1c1c;
+    display: block;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    height: 38px;
+    margin-right: 8px;
+    outline: none;
+    padding: 16px;
+}
+.pic{
+    width: 100%;
+    height: 100%;
+}
+.rounded{
+    border-radius: 4px;
+}
+.size-sm{
+    width: 5px;
+    height: 5px;
+}
+.gray-stick{
+    border-radius: 4px;
+    padding: 1px;
+    background: #ccc;
+    height: 100%;
+}
+textarea {
+    background-color: #f6f7f8;
+    border-radius: 4px;
+    border: 1px solid #edeff1;
+    resize: none;
+    width: 50%;
+   }
+
+    </style>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="flex w-960 mx-auto">
+        <div class="w-2/3">
+            <div class="py-2">
+                <div class="py-1">
+                    <div class="postdivmain">
+
+
+
+                        <div class="w-1/12 flex flex-col items-c">
+                            {% if is_liked %}
+                            <form action="{% url 'like_publications' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="publications_id" value="{{id}}" class="btn btn-success text-xs">
+                                    <svg class="bi bi-chevron-up" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+                                </button>
+                            </form>
+
+                            <span class="text-xs font-semibodl my-1">{{karma}}</span>
+
+                            <form action="{% url 'like_publications' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="publications_id" value="{{id}}" class="btn text-xs">
+                                    <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+                                </button>
+                            </form>
+                            {% elif is_disliked %}
+                            <form action="{% url 'dislike_publications' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="publications_id" value="{{id}}" class="btn text-xs">
+                                    <svg class="bi bi-chevron-up" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+                                </button>
+                            </form>
+
+                            <span class="text-xs font-semibodl my-1">{{karma}}</span>
+
+                            <form action="{% url 'dislike_publications' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="publications_id" value="{{id}}" class="btn btn-danger text-xs">
+                                    <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+                                </button>
+                            </form>
+                            {% else %}
+                            <form action="{% url 'like_publications' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="publications_id" value="{{id}}" class="btn text-xs">
+                                    <svg class="bi bi-chevron-up" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>
+                                </button>
+                            </form>
+
+                            <span class="text-xs font-semibodl my-1">{{karma}}</span>
+
+                            <form action="{% url 'dislike_publications' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="publications_id" value="{{id}}" class="btn text-xs">
+                                    <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+                                </button>
+                            </form>
+                            {% endif %}
+
+<!--                            <a href="#" data-action="like" data-id="{{ publications.id }}" class="btn text-xs">-->
+<!--                                <svg class="bi bi-chevron-up" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/></svg>-->
+<!--                            </a>-->
+
+<!--                            <a class="text-xs btn">-->
+<!--                                <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>-->
+<!--                            </a>-->
+                        </div>
+
+
+                        <div class="w-11/12 postdiv">
+                            <button onmousedown="javascript:location.replace('/');" type="button" class="close mr-2" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div class="items-c text-sc mb-2">
+                                <span class="text-grey">Posted by </span>
+                                <a href="/user/{{ author }}" class="text-grey ml-1 mx-1 no-underline hover:underline"> u/{{author}}</a>
+                            </div>
+                            <div>
+                                <h1 style="font-size: 30px;" class="mb-1">{{name}}</h1>
+                                <p class="mt-4">{{ text| safe }}</p>
+                            </div>
+
+                            <svg class="bi bi-chat-square-fill" width="10px" height="10px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                            </svg>
+                            <span style="font-size: 10px; bottom: 50px;">Комментарии {{comments_publication.count}}</span>
+
+                            {% if request.user.is_authenticated %}
+                            <div class="mt-3">
+                                <span style="font-size: 10px">Комментировать как <a href="/user/{{ request.user }}" style="font-size: 10px" class="text-grey ml-1 mx-1 no-underline hover:underline">{{request.user}}</a></span>
+                                <form action="" id="add_form" method="post">
+                                    {% csrf_token %}
+                                    <textarea style="font-size: 10px" type="text" name="text" placeholder="Напишите комментарий..."></textarea>
+                                </form>
+                                <button style="width: 70px; height: 30px " form="add_form" type="submit" class="btn btn-primary"><p class="items-c" style="align: center; font-size: 10px">Добавить</p></button>
+                            </div>
+                            {% endif %}
+
+
+                            {% if comments_publication.count > 0 %}
+                            <hr>
+
+
+                            <div class="mt-2">
+                                {% for comment in comments_publication.all%}
+                                <div class="flex mb-2 mt-2">
+                                    <div class="flex flex-col items-c">
+                                        <button class="btn size-sm text-xs">
+                                            <svg class="bi bi-chevron-up" transform="translate(-5,-10)" width="10px" height="10px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="text-xs size-sm btn">
+                                            <svg class="bi bi-chevron-down" transform="translate(-5,-10)" width="10px" height="10px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                            </svg>
+                                        </button>
+                                        <div class="gray-stick">
+                                        </div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="flex mt-1">
+                                            <a href="/user/{{ comment.author }}" style="font-size: 10px" class="text-grey ml-1 mx-1 no-underline hover:underline"> u/{{comment.author}}</a>
+                                            <p style="font-size: 10px">{{comment.karma}} points</p>
+                                        </div>
+                                        <div>
+                                            <p style="font-size: 12px">{{ comment.text| safe }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="w-1/3">
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+

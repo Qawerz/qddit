@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+.drag {
+        position:relative;
+        cursor:hand;
+        z-index: 100;
+    }
+
+
+#myImg {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#myImg:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+    box-sizing: content-box;
+    position:relative;
+    display: none; /* Hidden by default */
+    z-index: 100; /* Sit on top */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(85,85,85,0); /* Black w/ opacity */
+    width: 50%;
+    top: 4px;
+    left: 0;
+    cursor: move;
+    max-width: 500px;
+
+}
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+
+/* Modal Content (image) */
+.modal-content {
+<!-- max-width: 700px;-->
+    position: absolute;
+    width: 100%;
+    top: 4px;
+    text-align: center;
+    color: var(--theme_default_drag);
+    font-size: 0.9em;
+    cursor: move;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+
+}
+
+
+/* Add Animation */
+.modal-content, #caption {
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)}
+    to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px){
+    .modal-content {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<img id="myImg" src="https://sun9-58.userapi.com/c857332/v857332888/11f7c9/-OqlbrpegU4.jpg" style="width:100%;max-width:300px">
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <span class="close">×</span>
+    <img class="modal-content" id="img01">
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+var img = document.getElementById('myImg');
+var modalImg = document.getElementById("img01");
+img.onclick = function(){
+    modal.style.display = "block";
+    modalImg.src = this.src;
+}
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+</script>
+<script type="text/javascript">
+    var dragobject={
+        z: 0, x: 0, y: 0, offsetx : null, offsety : null, targetobj : null, dragapproved : 0,
+        initialize:function(){
+            document.onmousedown=this.drag
+            document.onmouseup=function(){this.dragapproved=0
+            }
+    },
+
+    drag:function(e) {
+        var evtobj=window.event? window.event : e
+        this.targetobj=window.event? event.srcElement : e.target
+        if (this.targetobj.className=="modal") {
+            this.dragapproved=1
+            if (isNaN(parseInt(this.targetobj.style.left))){this.targetobj.style.left=0}
+            if (isNaN(parseInt(this.targetobj.style.top))){this.targetobj.style.top=0}
+            this.offsetx=parseInt(this.targetobj.style.left)
+            this.offsety=parseInt(this.targetobj.style.top)
+            this.x=evtobj.clientX
+            this.y=evtobj.clientY
+            if (evtobj.preventDefault)
+            evtobj.preventDefault()
+            document.onmousemove=dragobject.moveit
+        }
+    },
+
+    moveit:function(e){
+        var evtobj=window.event? window.event : e
+        if (this.dragapproved==1){
+                this.targetobj.style.left=this.offsetx+evtobj.clientX-this.x+"px"
+                this.targetobj.style.top=this.offsety+evtobj.clientY-this.y+"px"
+                return false
+            }
+        }
+    }
+
+    dragobject.initialize()
+
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Список публикаций{% endblock %}
+
+<style>
+    *{
+        background-color: "#dae0e6";
+    }
+</style>
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<div class="bg-gray container">
+    <!-- Кнопка создания статьи -->
+    <button type="button" class="btn btn-primary mt-4" data-toggle="modal" data-target="#exampleModal">
+      Добавить новую статью
+    </button>
+    <!--Кнопка редактирования статей -->
+    {% url 'edit_page' as url_edit_page %}<!--disabled-->
+    <a type="button" class="btn btn-primary disabled mt-4" href="{{url_edit_page}}">Мои статьи</a>
+{% endif %}
+
+{% if messages %}
+    <div class="alert alert-success">
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% for publication in publications %}
+
+        <ul class="list-group mt-4">
+            <li class="list-group-item">
+                <b>{{ publication.create_date| date:'d.m.Y'}} | {{publication.author}} | "{{ publication.name }}"</b>
+                <span class="float-right mr-3"><a href="/page/{{ publication.id }}">Статья</a></span>
+                <br>{{ publication.text| safe |truncatechars:"120" }}
+            </li>
+        </ul>
+
+    {% endfor %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="add_form" method="post">
+                {% csrf_token %}
+                {{form}}
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            <button form="add_form" type="submit" class="btn btn-primary">Добавить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+ </div>
+{% endblock %}
+

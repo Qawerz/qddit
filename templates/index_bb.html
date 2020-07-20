@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h4 style="font-family: 'CyrillicOld', arial;"><span style="color:red; font-size:30px">В</span>сем привет, кто зашёл на этот сайт. С вами на связи Qawerz. На данном сайте вы можете создать статью, а так же <a href="register_page">зарегестрироваться</a> и <a href="login_page">авторизоваться</a>. На данный момент сайт находится в разработке.
+        <br><span class="spoiler" style="color:red">Конец.</span>
+    </h4>
+    
+    <img src="{% static qtest.jpg %}">
+</div>
+
+<!--<h1>Пароль Андрея - q1w2e3r4555</h1>-->
+{% endblock %}
+

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Создать статью{% endblock %}
+
+{% block content %}
+
+<!--<h1 class="mt-4">Админ панель</h1>-->
+
+
+<!--&lt;!&ndash; Button trigger modal &ndash;&gt;-->
+<!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">-->
+<!--  Добавить новую статью-->
+<!--</button>-->
+
+<!--    {% if success %}-->
+<!--        <p style="color:green">Запись добавлена</p>-->
+<!--    {% endif %}-->
+
+    {% if messages %}
+    <div class="alert alert-success">
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+
+{% if update %}
+
+{% if success_update %}
+<p style="color:blue">Запись обновлена</p>
+{% endif %}
+<p>Страница редактирования</p>
+<p><a href="{% url 'edit_page' %}">Вернуться назад</a></p>
+
+
+    <form id="update_data" method="post">
+            {% csrf_token %}
+            {{form}}
+        </form>
+
+    <form id="delete_form" action="{% url 'delete_page' publication.id %}" method="post">{% csrf_token %}</form>
+
+            <script>
+                function delete_question()
+                {
+                    if (confirm("Вы уверенны, что хотите удалить?"))
+                        {
+                            document.getElementById('delete_form').submit()
+                        }
+                }
+            </script>
+
+    <button form="update_data" type="submit" class="btn btn-primary">Обновить</button><button href="javascript:void()" onclick="delete_question()" class="btn btn-danger">Удалить</button>
+
+
+{% else %}
+<table class="table table-bordered mt-4">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Дата создания</th>
+        <th scope="col">Автор</th>
+        <th scope="col">Название</th>
+        <th scope="col">Редактирование</th>
+<!--        <th scope="col">Удаление</th>-->
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for publication in publications %}
+    {% if request.user == publication.author%}
+        <td>{{publication.id}}</td>
+        <td>{{publication.create_date}}</td>
+        <td>{{publication.author}}</td>
+        <td>{{publication.name}}</td>
+        <td><a href="{% url 'update_page' publication.id %}">Редактировать</a></td>
+<!--        <td>-->
+<!--            <form id="delete_form" action="{% url 'delete_page' publication.id %}" method="post">{% csrf_token %}</form>-->
+<!--                <a href="javascript:void()" onclick="delete_question()">Удалить</a>-->
+<!--            <script>-->
+<!--                function delete_question()-->
+<!--                {-->
+<!--                    if (confirm("Вы уверенны, что хотите удалить?"))-->
+<!--                        {-->
+<!--                            document.getElementById('delete_form').submit()-->
+<!--                        }-->
+<!--                }-->
+<!--            </script>-->
+<!--        </td>-->
+    </tr>
+    {% endif %}
+    {% endfor %}
+
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add_form" method="post">
+            {% csrf_token %}
+            {{form}}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button form="add_form" type="submit" class="btn btn-primary">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

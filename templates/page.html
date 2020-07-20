@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}<title>{{ publications.name }}</title>{% endblock %}
+{% block style %}
+<style>
+    .perenos-hyphens {
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Статья: {{ publications.name }}</h1>
+    <p><a href="/">Вернуться назад</a>
+
+    <p>Дата создания: {{ publications.create_date }}</p>
+    <div class="perenos-hyphens"><p class="word">{{ publications.text|safe }}</p></div>
+
+    <p>Комментарии</p>
+
+    {% for comment in publications.comments_publication.all%}
+    <ul class="list-group mt-4">
+            <li class="list-group-item">
+                <b>{{ comment.create_date| date:'d.m.Y'}} | {{comment.author}}"</b>
+                <br>{{ comment.text| safe}}
+            </li>
+        </ul>
+    {% endfor %}
+    <hr>
+
+    <p>Добавить комментарий</p>
+    <div class="col-4">
+        <form action="" id="add_form" method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+        </form>
+        <button form="add_form" type="submit" class="btn btn-primary">Добавить</button>
+    </div>
+</div>
+{% endblock %}
+

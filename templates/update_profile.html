@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}<title>{{ publications.name }}</title>{% endblock %}
+{% block style %}
+<style>
+       .perenos {
+    margin:20px auto;
+    width:1000px;
+    word-break:break-all;
+    }
+        .perenos-hyphens {
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    }
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+.w-960 {
+    width: 960px;
+}
+.w-2\/3 {
+    width: 66.66667%;
+}
+.w-1\/3 {
+    width: 33.33333%;
+}
+.w-1\/12 {
+    width: 8.33333%;
+}
+.w-11\/12 {
+    width: 91.66667%;
+}
+.flex {
+    display: flex;
+}
+.flex-col {
+    flex-direction: column;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.bg-gray{
+    background: #dae0e6;
+}
+.bg-soft-gray {
+    background-color: #f6f7f8;
+}
+.border-grey-light-alt {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+.bg-white {
+    background-color: #fff;
+}
+.text-xs {
+    font-size: .75rem;
+}
+.text-lg {
+    font-size: 1.125rem;
+}
+.font-medium {
+    font-weight: 500;
+}
+.font-semibold {
+    font-weight: 600;
+}
+.items-c {
+    align-items: center;
+}
+.items-t {
+    align-items: flex-start;
+}
+.items-s {
+    align-items: flex-stretch;
+}
+.color-soft-gray {
+    color: #878a8c;
+}
+.userlogocirc {
+    border: 1px solid black;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100px;
+}
+.createpostdiv {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 16px;
+    padding: 8px;
+}
+
+.postdivmain {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: flex;
+
+
+}
+.postdiv {
+    background-color: #fff;
+    margin-bottom: 2px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.user_favcolor{
+    {% if request.user.is_authenticated %}
+    background: #{{user.profile.favcolor}} repeat;
+    {% else %}
+    background: orange repeat;
+    {% endif %}
+}
+.updateinput {
+    background-color: #f6f7f8;
+    border-radius: 4px;
+    border: 1px solid #edeff1;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #1c1c1c;
+    display: block;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    height: 38px;
+    width: 500px;
+    margin-right: 8px;
+    outline: none;
+    padding: 16px;
+}
+.pic{
+    width: 100px;
+    height: 100px;
+}
+.rounded{
+    border-radius: 4px;
+}
+.size-sm{
+    width: 5px;
+    height: 5px;
+}
+.gray-stick{
+    border-radius: 4px;
+    padding: 1px;
+    background: #ccc;
+    height: 100%;
+}
+textarea {
+    border: 1px solid #edeff1;
+    resize: none;
+    width: 500px;
+    height: 100px;
+    background-color: #f6f7f8;
+    border-radius: 4px;
+    box-shadow: none;
+    box-sizing: border-box;
+    display: block;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    margin-right: 8px;
+    outline: none;
+    padding: 16px;
+   }
+.infodiv {
+    display: flex;
+}
+
+
+    </style>
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+function myFunction() {
+    var x = document.getElementById("myColor").value;
+    document.getElementById("demo").innerHTML = x;
+}
+</script>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="flex w-960 mx-auto">
+        <div class="w-2/3">
+            <div class="py-1">
+                <div class="py-1">
+                    <div style="padding: 50px" class="postdivmain">
+                            <form id="update" method="post">
+                                {% csrf_token %}
+                                <div>
+                                    <p><label for="id_email">Адрес электронной почты:</label><input class="updateinput" type="email" name="email" value="{{request.user.email}}" maxlength="254" id="id_email"></p>
+                                    <p><label for="id_first_name">Имя:</label><input class="updateinput" type="text" name="first_name" value="{{request.user.first_name}}" maxlength="30" id="id_first_name"></p>
+                                    <p><label for="id_last_name">Фамилия:</label><input class="updateinput" type="text" name="last_name" value="{{request.user.last_name}}" maxlength="150" id="id_last_name"></p>
+                                    <p><label for="id_bio">Биография:</label><br><textarea class="" name="bio" cols="40" rows="10" maxlength="500" class="form-control" id="id_bio">{{request.user.profile.bio}}</textarea></p>
+                                    <p><label for="id_birth_date">Дата рождения:</label><input class="updateinput" type="text" name="birth_date" value="{{request.user.profile.birth_date| date:'d.m.Y'}}" class="form-control" id="id_birth_date"></p>
+                                    <p><label for="id_favcolor">Любимый цвет:</label><input style="width: 500px;" type="color" name="favcolor" value="{{request.user.profile.favcolor}}" maxlength="10" class="bg-soft-gray form-control" id="id_favcolor"></p>
+                                    <p><label for="id_avatar">Аватар:</label><input class="updateinput" type="text" name="avatar" value="{{request.user.profile.avatar}}" maxlength="150" class="form-control" id="id_avatar"></p>
+                                </div>
+                                <button form="update" type="submit" class="btn btn-primary">Отправить</button>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-1/3">
+            <div class="py-2">
+                <div class="rounded border-grey-light-alt bg-white ml-4 py-2">
+                    <div style="padding: 12px;">
+                        <div class="ml-3 infodiv">
+                            <span class="userlogocirc favcolor items-s"><img class="pic" src="{{request.user.profile.avatar}}"></span>
+                        </div>
+                        <div>
+                            <p style="font-size: 70%" class="mt-1 ml-2">Ваша текущая аватарка</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

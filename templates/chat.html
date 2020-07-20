@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Чат{% endblock %}
+{% block script %}
+<script>
+<!--        function show()-->
+<!--        {-->
+<!--            $.ajax({-->
+<!--                url: "chat.html",-->
+<!--                cache: false,-->
+<!--                success: function(html){-->
+<!--                    $("#content").html(html);-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+
+<!--        $(document).ready(function(){-->
+<!--            show();-->
+<!--            setInterval('show()',1000);-->
+<!--        });-->
+
+
+<!--    setTimeout(function(){-->
+<!--        location.reload();-->
+<!--    }, 10000);-->
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+<div id="content" class="container" style=" height: 400px; overflow: auto;">
+     <ul  style="border-style:double; border-width:7; background-color:gray" class="list-group mt-4">
+
+         {% for message in messages %}
+            <li class="list-group-item">
+                <span>{{ message.nickname }} | {{ message.date}}</span>
+                <br><span>{{message.text}}</span>
+            </li>
+
+         {% endfor %}
+     </ul>
+</div>
+
+{% if request.user.is_authenticated %}
+    <div align="center">
+        <form id="add_mes" method="post">
+            {% csrf_token %}
+            {{form}}
+    <!--        <input type="text" name="nickname" placeholder="Ник">-->
+    <!--        <br>-->
+    <!--        <textarea rows="3" cols="50" type="text" name="text" placeholder="Напишите сообщение..."></textarea>-->
+    <!--        <br><br>-->
+            <button form="add_mes" type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+</div>
+
+{% else %}
+<h3 class="ml-3 mt-4">Писать в чат могут только зарегистрированные пользователи!</h3>
+{% endif %}
+
+{% endblock %}
+

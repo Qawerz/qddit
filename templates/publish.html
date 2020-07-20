@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Создать публикацию{% endblock %}
+
+{% block content %}
+<div align="center">
+    <h2>Создать статью</h2>
+
+    <form method="post" action="/publish">
+        {% csrf_token %}
+<!--        <input type="text" name="secret" placeholder="Secret key">-->
+<!--        <br><br>-->
+        <input type="text" name="name" placeholder="Название статьи">
+        <br><br>
+        <textarea rows="10" cols="45" type="text" name="text" placeholder="Текст статьи"></textarea>
+        <br>
+        <input type="submit" value="Опубликовать">
+    </form>
+</div>
+{% endblock %}
+
