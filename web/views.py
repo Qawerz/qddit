@@ -238,7 +238,7 @@ class PublicationsListNew(CreateView):
 
     def get_context_data(self, **kwargs):
         kwargs['publications'] = Publication.objects.all().order_by('-id')
-        kwargs['profiles'] = Profile.objects.all().order_by('-karma')
+        kwargs['profiles'] = Profile.objects.all().order_by('-karma')[:10]
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
@@ -256,6 +256,7 @@ class PublicationsListTop(CreateView):
 
     def get_context_data(self, **kwargs):
         kwargs['publications'] = Publication.objects.all().order_by('-karma')
+        kwargs['profiles'] = Profile.objects.all().order_by('-karma')[:10]
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
@@ -335,7 +336,7 @@ class PublicationDetailView(CreateView, FormMixin):
         """Получене название профиля из поисковой строки"""
         rget = str(request)
         pageid = rget[25:-2]
-        print(pageid, " - pageid")
+        # print(pageid, " - pageid")
 
         publications = Publication.objects.filter(id=pageid)
         for publication in publications:

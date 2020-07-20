@@ -32,7 +32,7 @@ ALLOWED_HOSTS = [
     '192.168.1.39',
     '127.0.0.1',
     '192.168.1.43',
-    'd1082b5a2b46.ngrok.io',
+    'fbeb44dd420e.ngrok.io',
 ]
 
 

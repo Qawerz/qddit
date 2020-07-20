@@ -285,7 +285,15 @@ window.scrollTo( 0 );
                                         <div>
                                             <b>Карма:</b>
                                             {% for profile in profiles %}
+
+                                            {% if profile.karma > 0 %}
+                                            <span style="color:forestgreen;font-size: 80%">+{{profile.karma}}</span><br>
+                                            {% elif profile.karma < 0 %}
+                                            <span style="color:darkred;font-size: 80%">{{profile.karma}}</span><br>
+                                            {% else %}
                                             <span style="font-size: 80%">{{profile.karma}}</span><br>
+                                            {% endif %}
+
                                             {% endfor %}
                                         </div>
                                     </div>
