@@ -498,7 +498,6 @@ class CommunityTemplateView(TemplateView):
         publications = Publication.objects.filter(community_id=id)
         profiles = Profile.objects.all()
 
-
         if community.subscribers.filter(id=request.user.id).exists():
             is_joined = True
         else:
