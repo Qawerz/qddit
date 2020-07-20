@@ -18,7 +18,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views.generic.edit import FormMixin, FormView
 
 from web.forms import PublicationForm, RegisterUserForm, AuthUserForm, CommentsForm, EditProfileForm, ProfileForm
-from web.models import Publication, Profile, Comments
+from web.models import Publication, Profile, Comments, Communities
 
 
 ##########################
@@ -169,40 +169,21 @@ class ProfileTemplateViewTop(TemplateView):
         """Список элементов контекста"""
         context = {
             ##########################################
-            'id': user_user.id,
-            'username': user_user.username,
-            'date_joined': user_user.date_joined,
-            'first_name': user_user.first_name,
-            'last_name': user_user.last_name,
-            'email': user_user.email,
-            'bio': user_prof.bio,
-            'birth_day': user_prof.birth_date,
-            'user_karma': user_prof.karma,
-            'favcolor': user_prof.favcolor,
-            'avatar': user_prof.avatar,
+            'id': id,
+            'username': username,
+            'date_joined': date_joined,
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'bio': bio,
+            'birth_day': birth_date,
+            'user_karma': user_karma,
+            'favcolor': favcolor,
+            'avatar': avatar,
             'publications': user_posts,
             ##########################################
         }
         return render(request, 'profile.html', context)
-
-#################################################################
-# def ProfileUpdate(request, username):
-#     if request.method == "POST":
-#         print(username)
-#         qu_user = User.objects.filter(username=username)
-#         for user_get in qu_user:
-#             id = user_get.id
-#         qu_profile = Profile.objects.filter(username_id=id)
-#         for profile_info in qu_profile:
-#             bio = profile_info.bio
-#             print(bio)
-#         Profile(
-#
-#             bio=bio
-#             ).save()
-#     context = {}
-#     return render(request, 'update_profile.html', context)
-#################################################################
 
 
 def ProfileUpdate(request, username):
@@ -231,13 +212,14 @@ def ProfileUpdate(request, username):
 
 
 class PublicationsListNew(CreateView):
-    model = Publication, Profile
+    model = Publication, Profile, Communities
     template_name = 'publications_rl.html'
     form_class = PublicationForm
     success_url = reverse_lazy('publications')
 
     def get_context_data(self, **kwargs):
         kwargs['publications'] = Publication.objects.all().order_by('-id')
+        kwargs['communities'] = Communities.objects.all().order_by('-id')[:10]
         kwargs['profiles'] = Profile.objects.all().order_by('-karma')[:10]
         return super().get_context_data(**kwargs)
 
@@ -249,13 +231,14 @@ class PublicationsListNew(CreateView):
 
 
 class PublicationsListTop(CreateView):
-    model = Publication, Profile
+    model = Publication, Profile, Communities
     template_name = 'publications_rl.html'
     form_class = PublicationForm
     success_url = reverse_lazy('publications')
 
     def get_context_data(self, **kwargs):
         kwargs['publications'] = Publication.objects.all().order_by('-karma')
+        kwargs['communities'] = Communities.objects.all().order_by('-id')[:10]
         kwargs['profiles'] = Profile.objects.all().order_by('-karma')[:10]
         return super().get_context_data(**kwargs)
 
@@ -337,6 +320,7 @@ class PublicationDetailView(CreateView, FormMixin):
         rget = str(request)
         pageid = rget[25:-2]
         # print(pageid, " - pageid")
+
 
         publications = Publication.objects.filter(id=pageid)
         for publication in publications:
@@ -487,3 +471,66 @@ def dislike_publication(request):
     return HttpResponseRedirect(reverse_lazy('page', kwargs={'pk': pid}))
 
 
+####################
+###  Сообщества  ###
+####################
+
+class CommunityTemplateView(TemplateView):
+    model = Communities, Publication, Profile
+    template_name = 'community.html'
+
+    def get(self, request, *args, **kwargs):
+        """Получене название профиля из поисковой строки"""
+        rget = str(request)
+        commn = rget[30:-2]
+        # print(commn)
+
+        """Выборка объекта из модел User и его элементы"""
+        communities = Communities.objects.filter(name=commn)
+
+        for community in communities:
+            id = community.id
+            name = community.name
+            about = community.about
+            create_date = community.create_date
+            subscribers = community.subscribers
+
+        publications = Publication.objects.filter(community_id=id)
+        profiles = Profile.objects.all()
+
+
+        if community.subscribers.filter(id=request.user.id).exists():
+            is_joined = True
+        else:
+            is_joined = False
+
+        """Список элементов контекста"""
+        context = {
+            ##########################################
+            'name': name,
+            'about': about,
+            'create_date': create_date,
+            'subscribers': subscribers,
+            'publications': publications,
+            'profiles': profiles,
+            'community': community,
+            'is_joined': is_joined,
+            ##########################################
+        }
+        return render(request, 'community.html', context)
+
+
+@login_required(login_url='/login')
+def join_community(request):
+    cid = request.POST.get('community_id')
+    community = get_object_or_404(Communities, id=cid)
+
+    is_joined = False
+    if community.subscribers.filter(id=request.user.id).exists():
+        community.subscribers.remove(request.user)
+        is_joined = False
+    else:
+        community.subscribers.add(request.user)
+        is_joined = True
+
+    return HttpResponseRedirect(reverse_lazy('community', kwargs={'name': community.name}))

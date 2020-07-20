@@ -5,7 +5,27 @@ from django.dispatch import receiver
 from django.urls import reverse
 
 
+class Communities(models.Model):
+    name = models.CharField(max_length=120, verbose_name="Название")
+    about = models.TextField(max_length=500, verbose_name='О сообществе', blank=True)
+    create_date = models.DateField(null=True, verbose_name='Дата создания', blank=True)
+    subscribers = models.ManyToManyField(User, related_name='subscribers', blank=True)
+    favcolor = models.CharField(max_length=10, verbose_name='Любимый цвет', blank=True)
+    avatar = models.CharField(max_length=150, verbose_name='Аватар', blank=True)
+
+    class Meta:
+        verbose_name = "Сообщество"
+        verbose_name_plural = "Сообщества"
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('community', kwargs={'name': self.name})
+
+
 class Publication(models.Model):
+    community = models.ForeignKey(Communities, on_delete=models.CASCADE, verbose_name='Сообщество', blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор статьи', blank=True, null=True)
     name = models.CharField(max_length=120, verbose_name="Название")
     create_date = models.DateTimeField(auto_now=True)
@@ -38,7 +58,7 @@ class Comments(models.Model):
 
     class Meta:
         verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарий"
+        verbose_name_plural = "Комментарии"
 
 
 class Profile(models.Model):
@@ -48,7 +68,6 @@ class Profile(models.Model):
     karma = models.IntegerField(verbose_name="Популярность пользователя", default=0)
     favcolor = models.CharField(max_length=10, verbose_name='Любимый цвет', blank=True)
     avatar = models.CharField(max_length=150, verbose_name='Аватар', blank=True)
-
 
     def __str__(self):
         return str(self.username)

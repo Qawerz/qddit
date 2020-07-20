@@ -11,7 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
-        fields = ('name', 'text')
+        fields = ('name', 'text',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

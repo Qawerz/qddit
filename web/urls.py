@@ -18,6 +18,11 @@ urlpatterns = [
 
     ########################################################################################
 
+    path('community/<str:name>', views.CommunityTemplateView.as_view(), name="community"),
+    path('community/join/$', views.join_community, name="join_community"),
+
+    ########################################################################################
+
     path('user/<str:username>', views.ProfileTemplateViewNew.as_view(), name="user_profile_new"),
     path('user/<str:username>/top', views.ProfileTemplateViewTop.as_view(), name="user_profile_top"),
     # path('user/<str:username>/update_profile', views.ProfileUpdateTemplateView.as_view(), name="user_profile_update"),
